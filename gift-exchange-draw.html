@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎁 谁是我的礼物搭子</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* 星星背景动画 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* 标题区域 */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #ffd700, #ff6b6b, #ffd700);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shine 3s linear infinite;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .header p {
+            color: #a0a0a0;
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* 玩法说明卡片 */
+        .rules-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .rules-card h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rules-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .step-text strong {
+            color: #ffd700;
+        }
+
+        /* 主要内容区 */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* 输入区域 */
+        .input-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-section h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .input-section textarea {
+            width: 100%;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            color: #fff;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .input-section textarea:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+
+        .input-section textarea::placeholder {
+            color: #666;
+        }
+
+        .input-hint {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* 参与者展示 */
+        .participants-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .participant-tag {
+            padding: 8px 16px;
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #ffd700;
+            transition: all 0.3s;
+        }
+
+        .participant-tag.drawn {
+            background: rgba(100, 100, 100, 0.2);
+            border-color: rgba(100, 100, 100, 0.3);
+            color: #666;
+            text-decoration: line-through;
+        }
+
+        .participant-tag.current {
+            animation: pulse 0.5s infinite;
+            background: rgba(255, 107, 107, 0.3);
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* 抽签区域 */
+        .draw-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .current-drawer {
+            margin-bottom: 25px;
+        }
+
+        .current-drawer-label {
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .current-drawer-name {
+            font-size: 1.8rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* 气泡区域 */
+        .bubble-area {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+            overflow: hidden;
+            border-radius: 16px;
+            background: linear-gradient(180deg, rgba(100, 200, 255, 0.1) 0%, rgba(150, 100, 255, 0.1) 100%);
+        }
+
+        /* 气泡样式 */
+        .bubble {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+            text-align: center;
+            font-weight: 500;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            padding: 10px;
+            word-break: break-all;
+            font-size: 0.75rem;
+        }
+
+        .bubble::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 20%;
+            width: 30%;
+            height: 20%;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transform: rotate(-30deg);
+        }
+
+        .bubble:hover {
+            transform: scale(1.15) !important;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            z-index: 10;
+        }
+
+        .bubble.floating {
+            animation: bubbleFloat var(--float-duration, 4s) ease-in-out infinite;
+            animation-delay: var(--float-delay, 0s);
+        }
+
+        @keyframes bubbleFloat {
+            0% { 
+                transform: translate(0, 0) rotate(0deg) scale(1); 
+            }
+            20% { 
+                transform: translate(var(--move-x1), var(--move-y1)) rotate(var(--rot1)) scale(1.02); 
+            }
+            40% { 
+                transform: translate(var(--move-x2), var(--move-y2)) rotate(var(--rot2)) scale(0.98); 
+            }
+            60% { 
+                transform: translate(var(--move-x3), var(--move-y3)) rotate(var(--rot3)) scale(1.03); 
+            }
+            80% { 
+                transform: translate(var(--move-x4), var(--move-y4)) rotate(var(--rot4)) scale(0.99); 
+            }
+            100% { 
+                transform: translate(0, 0) rotate(0deg) scale(1); 
+            }
+        }
+
+        /* 气泡光泽闪烁 */
+        .bubble::after {
+            content: '';
+            position: absolute;
+            bottom: 20%;
+            right: 20%;
+            width: 15%;
+            height: 10%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: shimmer 2s ease-in-out infinite;
+            animation-delay: var(--shimmer-delay, 0s);
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .bubble.pop {
+            animation: bubblePop 0.5s forwards;
+        }
+
+        @keyframes bubblePop {
+            0% { transform: scale(1); opacity: 1; }
+            30% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .bubble.fly-to-box {
+            animation: flyToBox 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes flyToBox {
+            0% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(0.5);
+                opacity: 0.8;
+            }
+            100% { 
+                transform: scale(0.1);
+                opacity: 0;
+            }
+        }
+
+        /* 气泡爆炸碎片 */
+        .bubble-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: particleFly 0.6s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes particleFly {
+            0% { 
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% { 
+                transform: translate(var(--px), var(--py)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* 抽签动画区 - 礼物盒 */
+        .draw-box {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 25px;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .gift-box {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+
+        .gift-box.shake {
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        .gift-box.open .box-lid {
+            transform: rotateX(-110deg) translateY(-30px);
+        }
+
+        .box-body {
+            width: 130px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            border-radius: 10px;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .box-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+        }
+
+        .box-lid {
+            width: 140px;
+            height: 25px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            border-radius: 5px;
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            transform-origin: bottom center;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .box-lid::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            border-radius: 50%;
+        }
+
+        .box-lid::after {
+            content: '🎀';
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.8rem;
+        }
+
+        /* 名字显示 */
+        .name-display {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        .name-display.show {
+            opacity: 1;
+        }
+
+        .name-display.revealed {
+            animation: reveal 0.5s forwards;
+            color: #ffd700;
+            font-size: 1.5rem;
+        }
+
+        @keyframes reveal {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .draw-btn {
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            border: none;
+            border-radius: 30px;
+            color: #1a1a2e;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .draw-btn:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 35px rgba(255, 215, 0, 0.5);
+        }
+
+        .draw-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .next-btn {
+            display: none;
+            padding: 16px 45px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 30px;
+            color: #1a1a2e;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 25px rgba(79, 172, 254, 0.3);
+            margin-top: 15px;
+            animation: nextBtnPulse 1.5s infinite;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 35px rgba(79, 172, 254, 0.5);
+        }
+
+        .next-btn.show {
+            display: inline-block;
+        }
+
+        @keyframes nextBtnPulse {
+            0%, 100% { box-shadow: 0 5px 25px rgba(79, 172, 254, 0.3); }
+            50% { box-shadow: 0 5px 35px rgba(79, 172, 254, 0.6); }
+        }
+
+        .restart-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .restart-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* 提示文字 */
+        .draw-hint {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        /* 结果展示区 */
+        .results-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .results-section h3 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .result-giver {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .result-arrow {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            margin: 0 15px;
+        }
+
+        .result-receiver {
+            color: #ffd700;
+            font-weight: bold;
+            padding: 5px 15px;
+            background: rgba(255, 215, 0, 0.15);
+            border-radius: 15px;
+        }
+
+        /* 完成庆祝 */
+        .celebration {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            animation: fadeIn 0.5s;
+        }
+
+        .celebration.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .celebration h2 {
+            font-size: 2rem;
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .celebration p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+
+        /* 烟花效果 */
+        .firework {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .firework-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: fireworkExplode 1s forwards;
+        }
+
+        @keyframes fireworkExplode {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .draw-box {
+                width: 160px;
+                height: 160px;
+            }
+
+            .box-body {
+                width: 120px;
+                height: 100px;
+            }
+
+            .box-lid {
+                width: 130px;
+                bottom: 100px;
+            }
+
+            .result-item {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .result-arrow {
+                transform: rotate(90deg);
+                margin: 5px 0;
+            }
+        }
+
+        /* 隐藏滚动条但保持功能 */
+        .results-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .results-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .results-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 3px;
+        }
+
+        /* 可爱提示弹窗 */
+        .cute-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(255, 107, 107, 0.4);
+            z-index: 1000;
+            text-align: center;
+            animation: toastPop 0.5s forwards;
+        }
+
+        @keyframes toastPop {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(-10deg); }
+            50% { transform: translate(-50%, -50%) scale(1.1) rotate(5deg); }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+        }
+
+        .cute-toast.hide {
+            animation: toastHide 0.3s forwards;
+        }
+
+        @keyframes toastHide {
+            to { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        }
+
+        .cute-toast-emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            animation: bounce 0.5s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        .cute-toast-text {
+            color: #333;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .cute-toast-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .cute-toast-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            animation: fadeInOverlay 0.3s forwards;
+        }
+
+        @keyframes fadeInOverlay {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 星星背景 -->
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <!-- 标题 -->
+        <header class="header">
+            <h1>🎁 谁是我的礼物搭子 🎁</h1>
+            <p>抽中谁，TA就是你的年会礼物搭子！</p>
+        </header>
+
+        <!-- 玩法说明 -->
+        <div class="rules-card">
+            <h3>✨ 玩法说明 - 打开惊喜</h3>
+            <div class="rules-steps">
+                <div class="step">
+                    <span class="step-num">1</span>
+                    <span class="step-text"><strong>输入名单</strong>：将所有参与者姓名输入下方（每行一个），点击「确认名单」</span>
+                </div>
+                <div class="step">
+                    <span class="step-num">2</span>
+                    <span class="step-text"><strong>轮流抽签</strong>：按顺序每人点击「开启礼盒」，抽取你要送礼物的对象（不能抽到自己哦~）</span>
+                </div>
+                <div class="step">
+                    <span class="step-num">3</span>
+                    <span class="step-text"><strong>惊喜揭晓</strong>：打开惊喜盒子，迎接你的专属礼物吧！🎉</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要内容 -->
+        <div class="main-content">
+            <!-- 输入区域 -->
+            <div class="input-section" id="inputSection">
+                <h3>📝 输入参与者名单（1-15人）</h3>
+                <textarea id="nameInput" placeholder="请输入参与者姓名，每行一个&#10;例如：&#10;张三&#10;李四&#10;王五&#10;..."></textarea>
+                <p class="input-hint">💡 提示：支持1-15人参与，每人只能抽一次，不会抽到自己</p>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="confirmNames()">✅ 确认名单</button>
+                    <button class="btn btn-secondary" onclick="loadExample()">📋 加载团队名单</button>
+                </div>
+                <div class="participants-display" id="participantsDisplay"></div>
+            </div>
+
+            <!-- 抽签区域 -->
+            <div class="draw-section" id="drawSection" style="display: none;">
+                <div class="current-drawer">
+                    <div class="current-drawer-label">🎯 当前抽签人</div>
+                    <div class="current-drawer-name" id="currentDrawer">-</div>
+                </div>
+
+                <!-- 气泡区域 -->
+                <div class="bubble-area" id="bubbleArea"></div>
+
+                <!-- 礼物盒 -->
+                <div class="draw-box">
+                    <div class="gift-box" id="giftBox">
+                        <div class="box-lid"></div>
+                        <div class="box-body"></div>
+                    </div>
+                    <div class="name-display" id="nameDisplay">?</div>
+                </div>
+
+                <button class="draw-btn" id="drawBtn" onclick="startDraw()">🎁 抽取你的惊喜礼物</button>
+                <button class="next-btn" id="nextBtn" onclick="goToNextPerson()">👉 下一位抽签</button>
+                <button class="restart-btn" id="restartBtn" onclick="restartDraw()">🔄 重新开始</button>
+                <p class="draw-hint" id="drawHint">点击按钮，揭晓你的礼物搭子！</p>
+
+                <div class="participants-display" id="remainingDisplay" style="margin-top: 25px;"></div>
+            </div>
+
+            <!-- 结果展示 -->
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h3>🎊 抽签结果</h3>
+                <div class="results-list" id="resultsList"></div>
+            </div>
+
+            <!-- 完成庆祝 -->
+            <div class="celebration" id="celebration">
+                <h2>🎉 礼物交换完毕！🎉</h2>
+                <p>预祝大家新年快乐，幸福多多！</p>
+                <button class="btn btn-primary" style="margin-top: 20px;" onclick="resetAll()">🔄 重新开始</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 核心数据 ====================
+        let participants = [];      // 所有参与者
+        let availableTargets = [];  // 可被抽取的人
+        let currentDrawerIndex = 0; // 当前抽签人索引
+        let results = [];           // 抽签结果 [{giver, receiver}]
+        let isDrawing = false;      // 是否正在抽签
+
+        // ==================== 初始化 ====================
+        window.onload = function() {
+            createStars();
+            // 自动加载预置名单
+            loadExample();
+        };
+
+        // 创建星星背景
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.width = (Math.random() * 3 + 1) + 'px';
+                star.style.height = star.style.width;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // ==================== 名单管理 ====================
+        
+        // 预置参与者名单（10人）
+        const presetParticipants = [
+            '戴俊俊(raymonddai)',
+            '常源(fionachang)',
+            '梁文睿(ainsonliang)',
+            '于梦琪(ameliamqyu)',
+            '姚致遠(edisonyiu)',
+            '李浩楠(robinhnli)',
+            '王旭彤(kathytwang)',
+            '余盛佳(seikayu)',
+            '寿佳雯(jiawenshou)',
+            '邓雨珊(sanniyadeng)'
+        ];
+
+        // 加载预置名单
+        function loadExample() {
+            document.getElementById('nameInput').value = presetParticipants.join('\n');
+        }
+
+        // 确认名单
+        function confirmNames() {
+            const input = document.getElementById('nameInput').value.trim();
+            if (!input) {
+                alert('请输入参与者名单！');
+                return;
+            }
+
+            // 解析名单，去重去空
+            const names = input.split('\n')
+                .map(n => n.trim())
+                .filter(n => n.length > 0);
+            
+            const uniqueNames = [...new Set(names)];
+
+            if (uniqueNames.length < 2) {
+                alert('至少需要2人才能进行抽签！');
+                return;
+            }
+
+            if (uniqueNames.length > 15) {
+                alert('最多支持15人参与！');
+                return;
+            }
+
+            // 初始化数据
+            participants = uniqueNames;
+            // 打乱可抽取列表顺序，增加随机性
+            availableTargets = shuffleArray([...uniqueNames]);
+            currentDrawerIndex = 0;
+            results = [];
+            
+            // 预先生成完美匹配，确保没有人抽到自己
+            perfectMatching = generatePerfectMatching(uniqueNames);
+
+            // 显示参与者标签
+            updateParticipantsDisplay();
+
+            // 切换到抽签界面
+            document.getElementById('inputSection').style.display = 'none';
+            document.getElementById('drawSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            // 更新当前抽签人
+            updateCurrentDrawer();
+        }
+
+        // 更新参与者显示
+        function updateParticipantsDisplay() {
+            const display = document.getElementById('remainingDisplay');
+            display.innerHTML = '';
+            
+            // 同时更新气泡区域
+            createBubbles();
+        }
+
+        // 气泡颜色数组
+        const bubbleColors = [
+            'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+            'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
+            'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+            'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)',
+            'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
+            'linear-gradient(135deg, #d299c2 0%, #fef9d7 100%)',
+            'linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)',
+            'linear-gradient(135deg, #fddb92 0%, #d1fdff 100%)',
+            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+        ];
+
+        // 创建气泡
+        function createBubbles() {
+            const bubbleArea = document.getElementById('bubbleArea');
+            bubbleArea.innerHTML = '';
+            
+            const currentDrawer = participants[currentDrawerIndex];
+            // 只显示可被抽取的人（排除自己）
+            const displayTargets = availableTargets.filter(name => name !== currentDrawer);
+            
+            displayTargets.forEach((name, index) => {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble floating';
+                bubble.dataset.name = name;
+                
+                // 随机大小 (70-100px)
+                const size = 70 + Math.random() * 30;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                
+                // 随机位置（避免重叠）
+                const areaWidth = bubbleArea.offsetWidth || 800;
+                const areaHeight = bubbleArea.offsetHeight || 300;
+                const maxX = areaWidth - size - 20;
+                const maxY = areaHeight - size - 20;
+                
+                // 使用网格分布避免重叠
+                const cols = Math.ceil(Math.sqrt(displayTargets.length * 2));
+                const rows = Math.ceil(displayTargets.length / cols);
+                const cellWidth = maxX / cols;
+                const cellHeight = maxY / rows;
+                const col = index % cols;
+                const row = Math.floor(index / cols);
+                
+                const baseX = col * cellWidth + 10;
+                const baseY = row * cellHeight + 10;
+                const randomOffsetX = Math.random() * (cellWidth * 0.5);
+                const randomOffsetY = Math.random() * (cellHeight * 0.5);
+                
+                bubble.style.left = Math.min(baseX + randomOffsetX, maxX) + 'px';
+                bubble.style.top = Math.min(baseY + randomOffsetY, maxY) + 'px';
+                
+                // 随机颜色
+                bubble.style.background = bubbleColors[index % bubbleColors.length];
+                bubble.style.boxShadow = '0 5px 20px rgba(255, 255, 255, 0.3), inset 0 -5px 20px rgba(0, 0, 0, 0.1)';
+                
+                // 随机动画参数 - 每个气泡独立的随机漂浮轨迹
+                const duration = 3 + Math.random() * 4;  // 动画周期 3-7s
+                bubble.style.setProperty('--float-duration', duration + 's');
+                bubble.style.setProperty('--float-delay', (Math.random() * 2) + 's');
+                bubble.style.setProperty('--shimmer-delay', (Math.random() * 2) + 's');
+                
+                // 生成随机移动路径点（4个中间点）
+                for (let i = 1; i <= 4; i++) {
+                    const moveX = (Math.random() > 0.5 ? 1 : -1) * (10 + Math.random() * 25);
+                    const moveY = (Math.random() > 0.5 ? 1 : -1) * (10 + Math.random() * 20);
+                    const rot = (Math.random() > 0.5 ? 1 : -1) * (3 + Math.random() * 8);
+                    bubble.style.setProperty('--move-x' + i, moveX + 'px');
+                    bubble.style.setProperty('--move-y' + i, moveY + 'px');
+                    bubble.style.setProperty('--rot' + i, rot + 'deg');
+                }
+                
+                // 显示名字（截取显示）
+                const displayName = name.length > 6 ? name.substring(0, 6) + '..' : name;
+                bubble.textContent = displayName;
+                bubble.title = name;
+                
+                bubbleArea.appendChild(bubble);
+            });
+        }
+
+        // 更新当前抽签人
+        function updateCurrentDrawer() {
+            if (currentDrawerIndex < participants.length) {
+                document.getElementById('currentDrawer').textContent = participants[currentDrawerIndex];
+            }
+        }
+
+        // ==================== 抽签逻辑 ====================
+
+        // 预先生成完美匹配（确保没有人抽到自己）
+        let perfectMatching = [];  // 预先计算好的匹配结果
+
+        // 生成完美匹配 - 使用错排算法确保没有人抽到自己
+        function generatePerfectMatching(names) {
+            const n = names.length;
+            if (n < 2) return [];
+            
+            // 复制数组并打乱
+            let shuffled = shuffleArray([...names]);
+            
+            // 使用错排算法：确保 shuffled[i] != names[i] 对所有 i 成立
+            // 方法：生成一个错排（derangement）
+            let result = generateDerangement(names);
+            
+            return result;
+        }
+
+        // 生成错排（Derangement）- 保证没有元素在原位置
+        function generateDerangement(names) {
+            const n = names.length;
+            let indices = Array.from({length: n}, (_, i) => i);
+            let deranged;
+            let maxAttempts = 1000;
+            let attempts = 0;
+            
+            do {
+                deranged = shuffleArray([...indices]);
+                attempts++;
+                // 检查是否是有效的错排（没有人在原位置）
+            } while (hasFixedPoint(indices, deranged) && attempts < maxAttempts);
+            
+            // 如果随机方法失败，使用确定性方法
+            if (hasFixedPoint(indices, deranged)) {
+                deranged = createDeterministicDerangement(n);
+            }
+            
+            // 返回匹配结果：names[i] 送给 names[deranged[i]]
+            return names.map((name, i) => ({
+                giver: name,
+                receiver: names[deranged[i]]
+            }));
+        }
+
+        // 检查是否有固定点（有人抽到自己）
+        function hasFixedPoint(original, permuted) {
+            for (let i = 0; i < original.length; i++) {
+                if (original[i] === permuted[i]) return true;
+            }
+            return false;
+        }
+
+        // 确定性错排生成（循环移位法）
+        function createDeterministicDerangement(n) {
+            // 简单的循环移位：每个人抽下一个人
+            // 但为了增加随机性，先打乱原数组再移位
+            let indices = Array.from({length: n}, (_, i) => i);
+            indices = shuffleArray(indices);
+            
+            // 循环移位
+            let result = [];
+            for (let i = 0; i < n; i++) {
+                result[indices[i]] = indices[(i + 1) % n];
+            }
+            return result;
+        }
+
+        // 开始抽签
+        function startDraw() {
+            if (isDrawing) return;
+            
+            const currentDrawer = participants[currentDrawerIndex];
+            
+            // 从预先计算的匹配中获取结果
+            const matchResult = perfectMatching.find(m => m.giver === currentDrawer);
+            
+            if (!matchResult) {
+                alert('抽签出现异常，请重新开始！');
+                return;
+            }
+
+            // 检查目标是否还在可抽取列表中
+            if (!availableTargets.includes(matchResult.receiver)) {
+                alert('抽签出现异常，请重新开始！');
+                return;
+            }
+
+            proceedWithDraw([matchResult.receiver]);
+        }
+
+        // 执行抽签
+        function proceedWithDraw(canDraw) {
+            isDrawing = true;
+            const drawBtn = document.getElementById('drawBtn');
+            drawBtn.disabled = true;
+
+            // 目标已经由完美匹配算法确定
+            const target = canDraw[0];
+
+            // 开始气泡动画
+            startBubbleAnimation(target);
+        }
+
+        // Fisher-Yates 洗牌算法
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = cryptoRandom(i + 1);
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 使用 crypto API 生成更随机的数字
+        function cryptoRandom(max) {
+            if (window.crypto && window.crypto.getRandomValues) {
+                const array = new Uint32Array(1);
+                window.crypto.getRandomValues(array);
+                return array[0] % max;
+            }
+            // 降级方案：使用时间戳增强随机性
+            const timestamp = Date.now();
+            const random1 = Math.random();
+            const random2 = Math.random();
+            return Math.floor((random1 * random2 * timestamp) % max);
+        }
+
+        // 气泡抽签动画
+        function startBubbleAnimation(target) {
+            const bubbleArea = document.getElementById('bubbleArea');
+            const giftBox = document.getElementById('giftBox');
+            const nameDisplay = document.getElementById('nameDisplay');
+            
+            // 找到目标气泡
+            const bubbles = bubbleArea.querySelectorAll('.bubble');
+            let targetBubble = null;
+            
+            bubbles.forEach(bubble => {
+                if (bubble.dataset.name === target) {
+                    targetBubble = bubble;
+                }
+            });
+            
+            if (!targetBubble) {
+                // 如果没找到（可能是特殊情况），直接显示结果
+                showResult(target);
+                return;
+            }
+            
+            // 1秒后戳破目标气泡
+            setTimeout(() => {
+                // 停止目标气泡的浮动动画
+                targetBubble.classList.remove('floating');
+                
+                // 创建爆炸粒子效果
+                createBubbleParticles(targetBubble);
+                
+                // 气泡戳破动画
+                targetBubble.classList.add('pop');
+                
+                // 播放戳破音效（可选）
+                // playPopSound();
+                
+                // 气泡消失后，礼盒打开显示名字
+                setTimeout(() => {
+                    targetBubble.style.display = 'none';
+                    
+                    // 礼盒抖动
+                    giftBox.classList.add('shake');
+                    
+                    setTimeout(() => {
+                        giftBox.classList.remove('shake');
+                        giftBox.classList.add('open');
+                        
+                        // 显示名字
+                        setTimeout(() => {
+                            nameDisplay.classList.add('show', 'revealed');
+                            nameDisplay.textContent = target;
+                            
+                            // 放烟花
+                            createFirework();
+                            createFirework();
+                            
+                            // 记录结果
+                            setTimeout(() => {
+                                recordResult(target);
+                            }, 1500);
+                        }, 500);
+                    }, 500);
+                }, 500);
+            }, 1000);
+        }
+
+        // 创建气泡爆炸粒子
+        function createBubbleParticles(bubble) {
+            const rect = bubble.getBoundingClientRect();
+            const bubbleArea = document.getElementById('bubbleArea');
+            const areaRect = bubbleArea.getBoundingClientRect();
+            
+            const centerX = rect.left - areaRect.left + rect.width / 2;
+            const centerY = rect.top - areaRect.top + rect.height / 2;
+            
+            const colors = ['#ff9a9e', '#a18cd1', '#ffecd2', '#84fab0', '#a1c4fd', '#ffd700'];
+            
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'bubble-particle';
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                const angle = (i / 12) * Math.PI * 2;
+                const distance = 40 + Math.random() * 40;
+                particle.style.setProperty('--px', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--py', Math.sin(angle) * distance + 'px');
+                
+                bubbleArea.appendChild(particle);
+                
+                // 移除粒子
+                setTimeout(() => particle.remove(), 600);
+            }
+        }
+
+        // 显示结果（备用）
+        function showResult(target) {
+            const giftBox = document.getElementById('giftBox');
+            const nameDisplay = document.getElementById('nameDisplay');
+            
+            giftBox.classList.add('open');
+            nameDisplay.classList.add('show', 'revealed');
+            nameDisplay.textContent = target;
+            createFirework();
+            
+            setTimeout(() => {
+                recordResult(target);
+            }, 1500);
+        }
+
+        // 记录结果
+        function recordResult(target) {
+            const currentDrawer = participants[currentDrawerIndex];
+            
+            // 添加结果
+            results.push({
+                giver: currentDrawer,
+                receiver: target
+            });
+
+            // 从可抽取列表中移除
+            availableTargets = availableTargets.filter(name => name !== target);
+
+            // 更新结果列表
+            updateResultsList();
+
+            // 重置礼盒状态
+            const giftBox = document.getElementById('giftBox');
+            const nameDisplay = document.getElementById('nameDisplay');
+            const drawBtn = document.getElementById('drawBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const drawHint = document.getElementById('drawHint');
+            
+            setTimeout(() => {
+                // 检查是否还有下一个人
+                if (currentDrawerIndex + 1 >= participants.length) {
+                    // 所有人都抽完了
+                    giftBox.classList.remove('open');
+                    nameDisplay.classList.remove('show', 'revealed');
+                    nameDisplay.textContent = '?';
+                    showCelebration();
+                } else {
+                    // 还有下一个人，显示"下一位"按钮
+                    drawBtn.style.display = 'none';
+                    nextBtn.classList.add('show');
+                    drawHint.textContent = '点击「下一位抽签」按钮，让下一位小伙伴来抽签吧！';
+                    isDrawing = false;
+                    
+                    // 停止所有气泡动画
+                    stopBubbleAnimations();
+                }
+            }, 1000);
+        }
+
+        // 停止气泡动画
+        function stopBubbleAnimations() {
+            const bubbles = document.querySelectorAll('.bubble');
+            bubbles.forEach(bubble => {
+                bubble.classList.remove('floating');
+            });
+        }
+
+        // 下一位抽签
+        function goToNextPerson() {
+            const giftBox = document.getElementById('giftBox');
+            const nameDisplay = document.getElementById('nameDisplay');
+            const drawBtn = document.getElementById('drawBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const drawHint = document.getElementById('drawHint');
+            
+            // 重置礼盒状态
+            giftBox.classList.remove('open');
+            nameDisplay.classList.remove('show', 'revealed');
+            nameDisplay.textContent = '?';
+            
+            // 切换按钮显示
+            nextBtn.classList.remove('show');
+            drawBtn.style.display = 'inline-block';
+            drawBtn.disabled = false;
+            drawHint.textContent = '点击按钮，揭晓你的礼物搭子！';
+            
+            // 下一个人
+            currentDrawerIndex++;
+            updateCurrentDrawer();
+            
+            // 重新创建气泡（会自动带有动画）
+            createBubbles();
+        }
+
+        // 重新开始抽签（回到第一个人）
+        function restartDraw() {
+            if (!confirm('确定要重新开始吗？当前抽签结果将被清空。')) {
+                return;
+            }
+            
+            // 重置数据
+            availableTargets = shuffleArray([...participants]);
+            currentDrawerIndex = 0;
+            results = [];
+            isDrawing = false;
+            
+            // 重新生成完美匹配
+            perfectMatching = generatePerfectMatching(participants);
+            
+            // 重置UI
+            const giftBox = document.getElementById('giftBox');
+            const nameDisplay = document.getElementById('nameDisplay');
+            const drawBtn = document.getElementById('drawBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const drawHint = document.getElementById('drawHint');
+            
+            giftBox.classList.remove('open', 'shake');
+            nameDisplay.classList.remove('show', 'revealed');
+            nameDisplay.textContent = '?';
+            
+            drawBtn.style.display = 'inline-block';
+            drawBtn.disabled = false;
+            nextBtn.classList.remove('show');
+            drawHint.textContent = '点击按钮，揭晓你的礼物搭子！';
+            
+            // 清空结果列表
+            document.getElementById('resultsList').innerHTML = '';
+            
+            // 更新当前抽签人
+            updateCurrentDrawer();
+            
+            // 重新创建气泡
+            createBubbles();
+        }
+
+        // 更新结果列表
+        function updateResultsList() {
+            const list = document.getElementById('resultsList');
+            const lastResult = results[results.length - 1];
+            
+            const item = document.createElement('div');
+            item.className = 'result-item';
+            item.innerHTML = `
+                <span class="result-giver">${lastResult.giver}</span>
+                <span class="result-arrow">将收到来自</span>
+                <span class="result-receiver">${lastResult.receiver}</span>
+                <span class="result-arrow">的惊喜礼物</span>
+            `;
+            list.appendChild(item);
+            
+            // 滚动到底部
+            list.scrollTop = list.scrollHeight;
+        }
+
+        // 显示完成庆祝
+        function showCelebration() {
+            document.getElementById('drawSection').style.display = 'none';
+            document.getElementById('celebration').classList.add('show');
+            
+            // 多放几次烟花
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => createFirework(), i * 300);
+            }
+        }
+
+        // ==================== 特效 ====================
+
+        // 创建烟花效果
+        function createFirework() {
+            const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#ff9f43', '#a55eea', '#26de81'];
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            firework.style.left = (Math.random() * 80 + 10) + '%';
+            firework.style.top = (Math.random() * 50 + 20) + '%';
+            document.body.appendChild(firework);
+
+            // 创建粒子
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'firework-particle';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                const angle = (i / 20) * Math.PI * 2;
+                const distance = 50 + Math.random() * 50;
+                particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                
+                firework.appendChild(particle);
+            }
+
+            // 移除烟花
+            setTimeout(() => {
+                firework.remove();
+            }, 1000);
+        }
+
+        // 显示可爱的"抽到自己"提示（备用，当真的只剩自己时触发）
+        function showSelfDrawToast(callback) {
+            // 创建遮罩
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+            document.body.appendChild(overlay);
+            
+            // 创建提示弹窗
+            const toast = document.createElement('div');
+            toast.className = 'cute-toast';
+            toast.innerHTML = `
+                <div class="cute-toast-emoji">😅🎁</div>
+                <div class="cute-toast-text">
+                    哎呀！差点抽到自己啦～<br>
+                    系统已自动帮你换个搭子，重新开启缘分！
+                </div>
+                <button class="cute-toast-btn" onclick="closeSelfDrawToast(this)">✨ 好的，继续抽签</button>
+            `;
+            document.body.appendChild(toast);
+            
+            // 保存回调
+            toast.dataset.callback = 'true';
+            window.selfDrawCallback = callback;
+        }
+
+        // 关闭提示弹窗
+        function closeSelfDrawToast(btn) {
+            const toast = btn.parentElement;
+            const overlay = document.querySelector('.overlay');
+            
+            toast.classList.add('hide');
+            
+            setTimeout(() => {
+                toast.remove();
+                if (overlay) overlay.remove();
+                
+                // 执行回调
+                if (window.selfDrawCallback) {
+                    window.selfDrawCallback();
+                    window.selfDrawCallback = null;
+                }
+            }, 300);
+        }
+
+        // 重置所有
+        function resetAll() {
+            participants = [];
+            availableTargets = [];
+            currentDrawerIndex = 0;
+            results = [];
+            isDrawing = false;
+
+            // 重置UI
+            document.getElementById('nameInput').value = '';
+            document.getElementById('resultsList').innerHTML = '';
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('drawSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('celebration').classList.remove('show');
+            document.getElementById('drawBtn').disabled = false;
+            document.getElementById('drawBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').classList.remove('show');
+            document.getElementById('drawHint').textContent = '点击按钮，揭晓你的礼物搭子！';
+            document.getElementById('bubbleArea').innerHTML = '';
+
+            // 重置礼盒
+            const giftBox = document.getElementById('giftBox');
+            const nameDisplay = document.getElementById('nameDisplay');
+            giftBox.classList.remove('open', 'shake');
+            nameDisplay.classList.remove('show', 'revealed');
+            nameDisplay.textContent = '?';
+        }
+    </script>
+</body>
+</html>
