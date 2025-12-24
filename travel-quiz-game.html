@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开出你的旅行目的地！</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 95%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 18px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #56ab2f 0%, #a8e6cf 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-solo {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            padding: 25px 50px;
+            font-size: 22px;
+        }
+
+        .btn-party {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            padding: 25px 50px;
+            font-size: 22px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 18px;
+            margin: 15px 0;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .mode-selection {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .mode-card {
+            background: #f7fafc;
+            border-radius: 20px;
+            padding: 30px;
+            width: 300px;
+            transition: transform 0.3s ease;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .mode-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .mode-card p {
+            color: #718096;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .timer {
+            background: linear-gradient(45deg, #ff6b6b 0%, #feca57 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .level-badge {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .mystery-box {
+            background: linear-gradient(45deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .mystery-box:hover {
+            transform: scale(1.02);
+        }
+
+        .mystery-box::before {
+            content: '🎁';
+            font-size: 3em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .clue-area {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 120px;
+            border: 2px dashed #cbd5e0;
+        }
+
+        .clue-content {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #4a5568;
+        }
+
+        /* 提示词盒子样式 */
+        .clue-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 35px;
+            border-radius: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            min-width: 150px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.5s ease;
+        }
+        
+        .clue-box.revealed {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+            animation: popIn 0.5s ease;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .hints-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .hint-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #4a5568;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .hint-card:nth-child(1) {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .hint-card:nth-child(2) {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .hint-card:nth-child(3) {
+            background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
+        }
+
+        /* 单人闯关结果样式 */
+        .solo-result {
+            padding: 30px;
+        }
+
+        .level-result {
+            background: linear-gradient(45deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item h4 {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-item p {
+            color: #4a5568;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .level-stars {
+            font-size: 40px;
+            margin: 20px 0;
+        }
+
+        /* 答案揭晓样式 */
+        .answer-reveal {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .answer-reveal h2 {
+            color: white;
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .answer-reveal p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* 动画效果 */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ff6b6b;
+            animation: confetti 3s linear infinite;
+        }
+
+        .confetti:nth-child(2n) { background: #4ecdc4; }
+        .confetti:nth-child(3n) { background: #45b7d1; }
+        .confetti:nth-child(4n) { background: #f9ca24; }
+        .confetti:nth-child(5n) { background: #6c5ce7; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                width: 98%;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .mode-selection {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .mode-card {
+                width: 100%;
+            }
+            
+            .quiz-header {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hint-card, .clue-box {
+                min-width: 100px;
+                padding: 15px 20px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 模式选择页 -->
+        <div id="modePage" class="page active">
+            <h1>🎁 开出你的旅行目的地！</h1>
+            <p style="color: #718096; margin-bottom: 20px;">选择你的游戏模式</p>
+            <div class="mode-selection">
+                <div class="mode-card">
+                    <h3>🎯 单人闯关版</h3>
+                    <p>独自挑战三关<br>难度逐步递进<br>看看你能闯到第几关！</p>
+                    <button class="btn btn-solo" onclick="selectMode('solo')">开始闯关</button>
+                </div>
+                <div class="mode-card">
+                    <h3>🎉 多人派对版</h3>
+                    <p>提示词每15秒揭晓一个<br>大家一起猜地名<br>看谁最先猜中！</p>
+                    <button class="btn btn-party" onclick="selectMode('party')">开始派对</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 单人闯关：输入昵称 -->
+        <div id="soloLoginPage" class="page">
+            <h1>🎯 单人闯关模式</h1>
+            <p style="color: #718096; margin-bottom: 20px;">三关挑战，难度递进，你准备好了吗？</p>
+            <div class="level-result" style="background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%); color: white;">
+                <p>🌟 第一关：入门级（5题）- 热门城市</p>
+                <p>🌟🌟 第二关：进阶级（5题）- 特色城市</p>
+                <p>🌟🌟🌟 第三关：地狱级（5题）- 冷门宝藏</p>
+            </div>
+            <input type="text" id="soloPlayerName" class="input-field" placeholder="请输入您的昵称" maxlength="10">
+            <br>
+            <button class="btn btn-primary" onclick="startSoloGame()">🚀 开始挑战</button>
+            <button class="btn btn-warning" onclick="backToMode()">🔙 返回</button>
+        </div>
+
+        <!-- 多人派对：答题页面 -->
+        <div id="partyQuizPage" class="page">
+            <div class="quiz-header">
+                <h2 id="partyQuestionNumber">第 1/10 题</h2>
+                <div class="timer" id="partyTimer">⏰ 45秒</div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="partyProgressFill" style="width: 10%"></div>
+            </div>
+
+            <div class="clue-area">
+                <h3 style="margin-bottom: 20px;">🔍 提示词（每15秒揭晓一个）</h3>
+                <div id="partyClues" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                    <div class="clue-box" id="clue1">❓</div>
+                    <div class="clue-box" id="clue2">❓</div>
+                    <div class="clue-box" id="clue3">❓</div>
+                </div>
+                <p id="clueHint" style="margin-top: 20px; color: #667eea; font-size: 18px;">第一个提示词即将揭晓...</p>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button class="btn btn-success" onclick="someoneGuessed()" style="font-size: 22px; padding: 20px 40px;">✅ 有人猜对了！</button>
+                <button class="btn btn-warning" onclick="showPartyAnswer()" style="font-size: 18px;">🏳️ 揭晓答案</button>
+            </div>
+            
+            <button class="btn" onclick="backToMode()" style="margin-top: 20px; background: #a0aec0;">🏠 返回首页</button>
+        </div>
+
+        <!-- 多人派对：答案揭晓 -->
+        <div id="partyAnswerPage" class="page">
+            <h1>🎉 答案揭晓！</h1>
+            <div class="answer-reveal">
+                <h2 id="partyAnswerCity">???</h2>
+                <p id="partyAnswerDesc">目的地描述</p>
+            </div>
+            <div style="margin: 30px 0;">
+                <p style="font-size: 20px; color: #4a5568;" id="partyResultText">准备好下一题了吗？</p>
+            </div>
+            <button class="btn btn-primary" onclick="nextPartyQuestion()" style="font-size: 20px; padding: 18px 40px;">➡️ 下一题</button>
+        </div>
+
+        <!-- 多人派对：游戏结束 -->
+        <div id="partyEndPage" class="page">
+            <h1>🏆 游戏结束！</h1>
+            <div class="level-result">
+                <h3 style="font-size: 28px; margin-bottom: 20px;">感谢参与！</h3>
+                <p style="font-size: 20px;">共完成 <span id="partyTotalQuestions">10</span> 道题目</p>
+                <p style="font-size: 18px; margin-top: 15px; color: #667eea;">希望大家玩得开心！🎊</p>
+            </div>
+            <button class="btn btn-primary" onclick="restartPartyGame()" style="font-size: 20px;">🔄 再玩一局</button>
+            <button class="btn btn-warning" onclick="backToMode()">🏠 返回首页</button>
+        </div>
+
+        <!-- 单人答题页面 -->
+        <div id="quizPage" class="page">
+            <div class="quiz-header">
+                <span class="level-badge" id="levelBadge">第一关</span>
+                <h2 id="questionNumber">第 1/5 题</h2>
+                <div class="timer" id="timer">⏰ 60秒</div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 20%"></div>
+            </div>
+
+            <div class="mystery-box" id="mysteryBox" onclick="openMysteryBox()">
+                <h3>🎁 点击抽取旅游盲盒</h3>
+                <p>神秘的旅游目的地等你发现！</p>
+            </div>
+
+            <div class="clue-area" id="clueArea">
+                <div class="clue-content">
+                    点击上方盲盒获取3个关键词提示...
+                </div>
+            </div>
+
+            <div>
+                <input type="text" id="answerInput" class="input-field" placeholder="请输入您的答案" disabled>
+                <br>
+                <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()" disabled>✅ 提交答案</button>
+            </div>
+        </div>
+
+        <!-- 单人闯关：关卡结算页 -->
+        <div id="soloLevelResultPage" class="page">
+            <div class="solo-result">
+                <h1 id="levelResultTitle">🎉 第一关完成！</h1>
+                <div class="level-result">
+                    <div class="level-stars" id="levelStars">⭐⭐⭐</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <h4>正确题数</h4>
+                            <p id="levelCorrect">4/5</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>正确率</h4>
+                            <p id="levelAccuracy">80%</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>用时</h4>
+                            <p id="levelTime">45.2秒</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success pulse" id="nextLevelBtn" onclick="nextLevel()">🚀 进入下一关</button>
+                <button class="btn btn-warning" onclick="resetGame()">🔄 重新开始</button>
+            </div>
+        </div>
+
+        <!-- 单人闯关：最终结算页 -->
+        <div id="soloFinalResultPage" class="page">
+            <h1>🏆 闯关完成！</h1>
+            <div class="level-result">
+                <h3 id="finalTitle">恭喜通关！</h3>
+                <div class="level-stars" id="finalStars">⭐⭐⭐⭐⭐</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h4>总正确数</h4>
+                        <p id="finalCorrect">12/15</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>总正确率</h4>
+                        <p id="finalAccuracy">80%</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>总用时</h4>
+                        <p id="finalTime">120.5秒</p>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-success" onclick="resetGame()">🎮 再来一次</button>
+            <button class="btn btn-primary" onclick="backToMode()">🔙 返回首页</button>
+        </div>
+    </div>
+
+    <script>
+        // 游戏模式
+        let gameMode = '';
+
+        // 单人模式状态
+        let gameState = {
+            currentPlayer: null,
+            currentQuestion: 0,
+            currentLevel: 1,
+            timer: null,
+            timeLeft: 60,
+            questionStartTime: 0,
+            levelResults: []
+        };
+
+        // 多人派对模式状态
+        let partyQuestions = [];
+        let partyCurrentQuestion = 0;
+        let partyRevealedClues = 0;
+        let partyTimer = null;
+        let partyClueTimer = null;
+        let partyTimeLeft = 45;
+        let partyTotalQuestions = 10;
+
+        // 单人题库
+        const soloQuestionBank = {
+            level1: [
+                { hints: ["🏯 故宫长城", "🦆 烤鸭", "🏛️ 天安门"], answer: "北京", keywords: ["北京"] },
+                { hints: ["🌃 魔都", "🥟 生煎小笼", "🗼 东方明珠"], answer: "上海", keywords: ["上海"] },
+                { hints: ["🌶️ 8D魔幻", "🍲 九宫格火锅", "🚡 轻轨穿楼"], answer: "重庆", keywords: ["重庆"] },
+                { hints: ["🐼 来了不想走", "🌶️ 串串香", "🏮 宽窄巷子"], answer: "成都", keywords: ["成都"] },
+                { hints: ["🍵 人间天堂", "🍜 片儿川", "🏞️ 西湖"], answer: "杭州", keywords: ["杭州"] },
+                { hints: ["🎭 十三朝古都", "🍜 肉夹馍", "⚔️ 兵马俑"], answer: "西安", keywords: ["西安"] },
+                { hints: ["🥘 叹早茶", "🌃 小蛮腰", "🌊 珠江"], answer: "广州", keywords: ["广州"] },
+                { hints: ["🎹 钢琴之岛", "🍜 沙茶面", "🏝️ 鼓浪屿"], answer: "厦门", keywords: ["厦门"] }
+            ],
+            level2: [
+                { hints: ["📸 20元人民币背景", "🍜 嗦粉", "🏞️ 漓江竹筏"], answer: "桂林", keywords: ["桂林"] },
+                { hints: ["🐴 茶马古道", "🫕 腊排骨火锅", "🏔️ 玉龙雪山"], answer: "丽江", keywords: ["丽江"] },
+                { hints: ["🍺 哈啤酒吃嘎啦", "🦐 辣炒蛤蜊", "🌉 栈桥"], answer: "青岛", keywords: ["青岛"] },
+                { hints: ["📜 落霞与孤鹜齐飞", "🍲 瓦罐汤拌粉", "🏯 滕王阁"], answer: "南昌", keywords: ["南昌"] },
+                { hints: ["🌸 烟花三月", "🥟 蟹黄汤包", "🎋 瘦西湖"], answer: "扬州", keywords: ["扬州"] },
+                { hints: ["🦆 鸭鸭我啊", "🍜 鸭血粉丝汤", "🏛️ 中山陵"], answer: "南京", keywords: ["南京"] },
+                { hints: ["🙏 一生必去一次", "🫖 酥油茶糌粑", "🏰 布达拉宫"], answer: "拉萨", keywords: ["拉萨"] },
+                { hints: ["🎨 飞天壁画", "🍖 驴肉黄面", "🌙 月牙泉"], answer: "敦煌", keywords: ["敦煌"] }
+            ],
+            level3: [
+                { hints: ["🌈 彩虹山丹霞", "🍜 牛大碗", "🌉 黄河铁桥"], answer: "兰州", keywords: ["兰州"] },
+                { hints: ["🐎 风吹草低", "🥛 奶茶手扒肉", "🏜️ 响沙湾"], answer: "呼和浩特", keywords: ["呼和浩特", "呼市"] },
+                { hints: ["🌾 塞上江南", "🍇 枸杞", "🏜️ 沙坡头"], answer: "银川", keywords: ["银川"] },
+                { hints: ["🌊 天空之镜", "📸 网红打卡", "🧂 盐湖"], answer: "茶卡", keywords: ["茶卡"] },
+                { hints: ["🦌 驯鹿之乡", "❄️ 冷极村", "🌲 白桦林"], answer: "漠河", keywords: ["漠河"] },
+                { hints: ["🎭 变脸绝技", "🍵 盖碗茶", "🐻 大佛"], answer: "乐山", keywords: ["乐山"] },
+                { hints: ["🎋 清明上河图", "🥟 灌汤包", "🏛️ 包公祠"], answer: "开封", keywords: ["开封"] },
+                { hints: ["🏺 龙门石窟", "🍜 水席", "🌸 牡丹花城"], answer: "洛阳", keywords: ["洛阳"] }
+            ]
+        };
+
+        // 多人派对题库
+        const partyQuestionBank = [
+            { hints: ["📸 20元人民币背景", "🍜 嗦粉", "🏞️ 漓江竹筏"], answer: "桂林" },
+            { hints: ["🐴 茶马古道", "🫕 腊排骨火锅", "🏔️ 玉龙雪山"], answer: "丽江" },
+            { hints: ["🍺 哈啤酒吃嘎啦", "🦐 辣炒蛤蜊", "🌉 栈桥"], answer: "青岛" },
+            { hints: ["📜 落霞与孤鹜齐飞", "🍲 瓦罐汤拌粉", "🏯 滕王阁"], answer: "南昌" },
+            { hints: ["🌸 烟花三月", "🥟 蟹黄汤包", "🎋 瘦西湖"], answer: "扬州" },
+            { hints: ["🦆 鸭鸭我啊", "🍜 鸭血粉丝汤", "🏛️ 中山陵"], answer: "南京" },
+            { hints: ["🙏 一生必去一次", "🫖 酥油茶糌粑", "🏰 布达拉宫"], answer: "拉萨" },
+            { hints: ["🎨 飞天壁画", "🍖 驴肉黄面", "🌙 月牙泉"], answer: "敦煌" },
+            { hints: ["🌶️ 8D魔幻城市", "🍲 九宫格火锅", "🚡 长江索道"], answer: "重庆" },
+            { hints: ["🐼 来了就不想走", "🌶️ 兔头冷串串", "🏮 宽窄巷子"], answer: "成都" },
+            { hints: ["🌃 魔都", "🥟 生煎小笼", "🗼 东方明珠"], answer: "上海" },
+            { hints: ["🏯 六百年紫禁城", "🦆 烤鸭卷饼", "🏰 故宫"], answer: "北京" },
+            { hints: ["🍵 人间天堂", "🍜 片儿川", "🏞️ 西湖断桥"], answer: "杭州" },
+            { hints: ["🎭 十三朝古都", "🍜 肉夹馍凉皮", "⚔️ 兵马俑"], answer: "西安" },
+            { hints: ["🥘 叹早茶", "🌃 小蛮腰", "🌊 珠江夜游"], answer: "广州" },
+            { hints: ["🎹 钢琴之岛", "🍜 沙茶面", "🏝️ 鼓浪屿"], answer: "厦门" },
+            { hints: ["🌈 彩虹山", "🍜 牛肉面", "🌉 黄河铁桥"], answer: "兰州" },
+            { hints: ["🌊 东方夏威夷", "🥥 清补凉", "🏖️ 亚龙湾"], answer: "三亚" },
+            { hints: ["🎵 浪漫之都", "🦪 烤生蚝", "🏖️ 星海广场"], answer: "大连" },
+            { hints: ["❄️ 冰城", "🍖 锅包肉", "⛪ 索菲亚教堂"], answer: "哈尔滨" },
+            { hints: ["🏔️ 春城", "🌸 蓝花楹", "🦋 滇池海鸥"], answer: "昆明" },
+            { hints: ["🌬️ 有风的地方", "🍜 饵丝", "🏯 古城三塔"], answer: "大理" },
+            { hints: ["🗼 铁塔之城", "🥐 可颂咖啡", "🎨 卢浮宫"], answer: "巴黎" },
+            { hints: ["🎡 大本钟", "☕ 下午茶", "👑 白金汉宫"], answer: "伦敦" },
+            { hints: ["🏛️ 多瑙河明珠", "♨️ 温泉之都", "🌉 链子桥"], answer: "布达佩斯" },
+            { hints: ["🗽 自由女神", "🍎 大苹果", "🏙️ 时代广场"], answer: "纽约" },
+            { hints: ["🗻 富士山下", "🍣 寿司刺身", "🌸 樱花大道"], answer: "东京" },
+            { hints: ["🦘 悉尼歌剧院", "🏖️ 邦迪海滩", "🌉 海港大桥"], answer: "悉尼" },
+            { hints: ["🎭 斗兽场", "🍝 意面披萨", "⛲ 许愿池"], answer: "罗马" },
+            { hints: ["💃 弗拉门戈", "🏟️ 高迪建筑", "⚽ 诺坎普"], answer: "巴塞罗那" },
+            { hints: ["🍺 啤酒节", "🏰 新天鹅堡", "🥨 巴伐利亚"], answer: "慕尼黑" },
+            { hints: ["🌷 郁金香", "🚲 运河骑行", "🎨 梵高博物馆"], answer: "阿姆斯特丹" },
+            { hints: ["🛕 泰式按摩", "🍜 冬阴功", "🛺 嘟嘟车"], answer: "曼谷" }
+        ];
+
+        let quizQuestions = [];
+
+        // 模式选择
+        function selectMode(mode) {
+            gameMode = mode;
+            if (mode === 'solo') {
+                showPage('soloLoginPage');
+            } else {
+                startPartyGame();
+            }
+        }
+
+        function backToMode() {
+            resetGame();
+            clearAllTimers();
+            showPage('modePage');
+        }
+
+        function clearAllTimers() {
+            if (partyTimer) clearInterval(partyTimer);
+            if (partyClueTimer) clearInterval(partyClueTimer);
+            if (gameState.timer) clearInterval(gameState.timer);
+        }
+
+        // ========== 多人派对模式 ==========
+        function startPartyGame() {
+            // 随机选择10道题
+            const shuffled = [...partyQuestionBank].sort(() => Math.random() - 0.5);
+            partyQuestions = shuffled.slice(0, partyTotalQuestions);
+            partyCurrentQuestion = 0;
+            
+            startPartyQuestion();
+        }
+
+        function startPartyQuestion() {
+            const q = partyQuestions[partyCurrentQuestion];
+            partyRevealedClues = 0;
+            partyTimeLeft = 45;
+            
+            // 更新题号和进度
+            document.getElementById('partyQuestionNumber').textContent = `第 ${partyCurrentQuestion + 1}/${partyTotalQuestions} 题`;
+            document.getElementById('partyProgressFill').style.width = `${((partyCurrentQuestion + 1) / partyTotalQuestions) * 100}%`;
+            document.getElementById('partyTimer').textContent = `⏰ ${partyTimeLeft}秒`;
+            
+            // 重置提示词显示
+            document.getElementById('clue1').textContent = '❓';
+            document.getElementById('clue1').className = 'clue-box';
+            document.getElementById('clue2').textContent = '❓';
+            document.getElementById('clue2').className = 'clue-box';
+            document.getElementById('clue3').textContent = '❓';
+            document.getElementById('clue3').className = 'clue-box';
+            document.getElementById('clueHint').textContent = '第一个提示词即将揭晓...';
+            
+            showPage('partyQuizPage');
+            
+            // 清除之前的计时器
+            clearAllTimers();
+            
+            // 3秒后揭晓第一个提示词
+            setTimeout(() => {
+                revealClue(1);
+                startPartyTimers();
+            }, 3000);
+        }
+
+        function startPartyTimers() {
+            // 总计时器
+            partyTimer = setInterval(() => {
+                partyTimeLeft--;
+                document.getElementById('partyTimer').textContent = `⏰ ${partyTimeLeft}秒`;
+                
+                if (partyTimeLeft <= 10) {
+                    document.getElementById('partyTimer').style.background = 'linear-gradient(45deg, #ff4757 0%, #ff3838 100%)';
+                }
+                
+                if (partyTimeLeft <= 0) {
+                    clearAllTimers();
+                    showPartyAnswer();
+                }
+            }, 1000);
+            
+            // 提示词揭晓计时器（每15秒揭晓一个）
+            partyClueTimer = setInterval(() => {
+                if (partyRevealedClues < 3) {
+                    partyRevealedClues++;
+                    revealClue(partyRevealedClues);
+                }
+                if (partyRevealedClues >= 3) {
+                    clearInterval(partyClueTimer);
+                }
+            }, 15000);
+        }
+
+        function revealClue(index) {
+            const q = partyQuestions[partyCurrentQuestion];
+            const clueEl = document.getElementById('clue' + index);
+            
+            if (clueEl && q.hints[index - 1]) {
+                clueEl.textContent = q.hints[index - 1];
+                clueEl.className = 'clue-box revealed';
+                partyRevealedClues = index;
+                
+                if (index < 3) {
+                    document.getElementById('clueHint').textContent = `已揭晓 ${index}/3 个提示词，下一个15秒后揭晓`;
+                } else {
+                    document.getElementById('clueHint').textContent = '所有提示词已揭晓！快猜答案吧！';
+                }
+            }
+        }
+
+        function someoneGuessed() {
+            clearAllTimers();
+            
+            const q = partyQuestions[partyCurrentQuestion];
+            document.getElementById('partyAnswerCity').textContent = q.answer;
+            document.getElementById('partyAnswerDesc').textContent = q.hints.join(' · ');
+            document.getElementById('partyResultText').textContent = '🎉 恭喜猜对！准备下一题~';
+            
+            showPage('partyAnswerPage');
+        }
+
+        function showPartyAnswer() {
+            clearAllTimers();
+            
+            const q = partyQuestions[partyCurrentQuestion];
+            document.getElementById('partyAnswerCity').textContent = q.answer;
+            document.getElementById('partyAnswerDesc').textContent = q.hints.join(' · ');
+            document.getElementById('partyResultText').textContent = '答案揭晓！准备下一题~';
+            
+            showPage('partyAnswerPage');
+        }
+
+        function nextPartyQuestion() {
+            partyCurrentQuestion++;
+            
+            // 重置计时器颜色
+            document.getElementById('partyTimer').style.background = 'linear-gradient(45deg, #ff6b6b 0%, #feca57 100%)';
+            
+            if (partyCurrentQuestion >= partyTotalQuestions) {
+                document.getElementById('partyTotalQuestions').textContent = partyTotalQuestions;
+                createConfetti();
+                showPage('partyEndPage');
+            } else {
+                startPartyQuestion();
+            }
+        }
+
+        function restartPartyGame() {
+            startPartyGame();
+        }
+
+        // ========== 单人闯关模式 ==========
+        function startSoloGame() {
+            const nameInput = document.getElementById('soloPlayerName');
+            const playerName = nameInput.value.trim();
+            
+            if (!playerName) {
+                alert('请输入昵称！');
+                return;
+            }
+            
+            gameState.currentPlayer = {
+                name: playerName,
+                answers: [],
+                totalTime: 0,
+                accuracy: 0
+            };
+            gameState.currentLevel = 1;
+            gameState.levelResults = [];
+            
+            startSoloLevel();
+        }
+
+        function startSoloLevel() {
+            const levelKey = `level${gameState.currentLevel}`;
+            const levelQuestions = [...soloQuestionBank[levelKey]];
+            
+            quizQuestions = levelQuestions.sort(() => Math.random() - 0.5).slice(0, 5);
+            
+            gameState.currentQuestion = 0;
+            gameState.currentPlayer.answers = [];
+            gameState.questionStartTime = 0;
+            
+            const levelNames = ['第一关：入门级', '第二关：进阶级', '第三关：地狱级'];
+            document.getElementById('levelBadge').textContent = levelNames[gameState.currentLevel - 1];
+            
+            showPage('quizPage');
+            startQuestion();
+        }
+
+        function nextLevel() {
+            gameState.currentLevel++;
+            if (gameState.currentLevel > 3) {
+                showSoloFinalResult();
+            } else {
+                startSoloLevel();
+            }
+        }
+
+        function showSoloLevelResult() {
+            const answers = gameState.currentPlayer.answers;
+            const correct = answers.filter(a => a.correct).length;
+            const total = answers.length;
+            const accuracy = Math.round((correct / total) * 100);
+            const totalTime = answers.reduce((sum, a) => sum + a.time, 0);
+            
+            gameState.levelResults.push({
+                level: gameState.currentLevel,
+                correct,
+                total,
+                accuracy,
+                time: Math.round(totalTime * 10) / 10
+            });
+            
+            let stars = '';
+            if (accuracy >= 100) stars = '⭐⭐⭐';
+            else if (accuracy >= 80) stars = '⭐⭐';
+            else if (accuracy >= 60) stars = '⭐';
+            else stars = '💔';
+            
+            const levelNames = ['第一关', '第二关', '第三关'];
+            document.getElementById('levelResultTitle').textContent = 
+                accuracy >= 60 ? `🎉 ${levelNames[gameState.currentLevel - 1]}完成！` : `😢 ${levelNames[gameState.currentLevel - 1]}失败...`;
+            document.getElementById('levelStars').textContent = stars;
+            document.getElementById('levelCorrect').textContent = `${correct}/${total}`;
+            document.getElementById('levelAccuracy').textContent = `${accuracy}%`;
+            document.getElementById('levelTime').textContent = `${Math.round(totalTime * 10) / 10}秒`;
+            
+            const nextBtn = document.getElementById('nextLevelBtn');
+            if (accuracy >= 60 && gameState.currentLevel < 3) {
+                nextBtn.style.display = 'inline-block';
+                nextBtn.textContent = '🚀 进入下一关';
+            } else if (gameState.currentLevel >= 3) {
+                showSoloFinalResult();
+                return;
+            } else {
+                nextBtn.style.display = 'none';
+            }
+            
+            showPage('soloLevelResultPage');
+            if (accuracy >= 60) createConfetti();
+        }
+
+        function showSoloFinalResult() {
+            const results = gameState.levelResults;
+            const totalCorrect = results.reduce((sum, r) => sum + r.correct, 0);
+            const totalQuestions = results.reduce((sum, r) => sum + r.total, 0);
+            const totalAccuracy = Math.round((totalCorrect / totalQuestions) * 100);
+            const totalTime = results.reduce((sum, r) => sum + r.time, 0);
+            
+            let stars = '';
+            const passedLevels = results.filter(r => r.accuracy >= 60).length;
+            if (passedLevels === 3 && totalAccuracy >= 90) stars = '🌟🌟🌟🌟🌟';
+            else if (passedLevels === 3) stars = '⭐⭐⭐⭐';
+            else if (passedLevels >= 2) stars = '⭐⭐⭐';
+            else if (passedLevels >= 1) stars = '⭐⭐';
+            else stars = '⭐';
+            
+            let title = '';
+            if (passedLevels === 3 && totalAccuracy >= 90) title = '🎊 旅游达人！完美通关！';
+            else if (passedLevels === 3) title = '🎉 恭喜通关！';
+            else if (passedLevels >= 2) title = '👍 表现不错！';
+            else title = '💪 继续加油！';
+            
+            document.getElementById('finalTitle').textContent = title;
+            document.getElementById('finalStars').textContent = stars;
+            document.getElementById('finalCorrect').textContent = `${totalCorrect}/${totalQuestions}`;
+            document.getElementById('finalAccuracy').textContent = `${totalAccuracy}%`;
+            document.getElementById('finalTime').textContent = `${Math.round(totalTime * 10) / 10}秒`;
+            
+            showPage('soloFinalResultPage');
+            createConfetti();
+        }
+
+        // 单人答题逻辑
+        function startQuestion() {
+            const questionNumber = document.getElementById('questionNumber');
+            const progressFill = document.getElementById('progressFill');
+            const mysteryBox = document.getElementById('mysteryBox');
+            const clueArea = document.getElementById('clueArea');
+            const answerInput = document.getElementById('answerInput');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            questionNumber.textContent = `第 ${gameState.currentQuestion + 1}/${quizQuestions.length} 题`;
+            const progress = ((gameState.currentQuestion + 1) / quizQuestions.length) * 100;
+            progressFill.style.width = `${progress}%`;
+            
+            mysteryBox.innerHTML = `
+                <h3>🎁 点击抽取旅游盲盒</h3>
+                <p>神秘的旅游目的地等你发现！</p>
+            `;
+            clueArea.innerHTML = '<div class="clue-content">点击上方盲盒获取3个关键词提示...</div>';
+            answerInput.value = '';
+            answerInput.disabled = true;
+            submitBtn.disabled = true;
+            
+            document.getElementById('timer').style.background = 'linear-gradient(45deg, #ff6b6b 0%, #feca57 100%)';
+            
+            gameState.timeLeft = 60;
+            gameState.questionStartTime = Date.now();
+            startTimer();
+        }
+
+        function openMysteryBox() {
+            const mysteryBox = document.getElementById('mysteryBox');
+            const clueArea = document.getElementById('clueArea');
+            const answerInput = document.getElementById('answerInput');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            const currentQ = quizQuestions[gameState.currentQuestion];
+            mysteryBox.innerHTML = `
+                <h3>🎁 盲盒已开启！</h3>
+                <p>根据关键词猜答案</p>
+            `;
+            
+            const hintsHtml = currentQ.hints.map(hint => 
+                `<div class="hint-card">${hint}</div>`
+            ).join('');
+            clueArea.innerHTML = `<div class="hints-container">${hintsHtml}</div>`;
+            
+            answerInput.disabled = false;
+            submitBtn.disabled = false;
+            answerInput.focus();
+            
+            answerInput.onkeypress = function(e) {
+                if (e.key === 'Enter') {
+                    submitAnswer();
+                }
+            };
+        }
+
+        function submitAnswer() {
+            const answerInput = document.getElementById('answerInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const userAnswer = answerInput.value.trim();
+            
+            if (!userAnswer) {
+                alert('请输入答案！');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            answerInput.disabled = true;
+            
+            const answerTime = (Date.now() - gameState.questionStartTime) / 1000;
+            const currentQ = quizQuestions[gameState.currentQuestion];
+            const isCorrect = checkAnswer(userAnswer, currentQ);
+            
+            gameState.currentPlayer.answers.push({
+                correct: isCorrect,
+                time: Math.round(answerTime * 10) / 10
+            });
+            
+            clearInterval(gameState.timer);
+            showAnswerFeedback(isCorrect, currentQ.answer);
+            
+            setTimeout(() => {
+                nextQuestion();
+            }, 2000);
+        }
+
+        function checkAnswer(userAnswer, question) {
+            return question.keywords.some(keyword => 
+                userAnswer.toLowerCase().includes(keyword.toLowerCase())
+            );
+        }
+
+        function showAnswerFeedback(isCorrect, correctAnswer) {
+            const clueArea = document.getElementById('clueArea');
+            let feedback = '';
+            
+            if (isCorrect) {
+                feedback = `<div class="clue-content" style="color: #48bb78; font-size: 24px;">✅ 回答正确！</div>`;
+            } else {
+                feedback = `<div class="clue-content" style="color: #f56565; font-size: 24px;">❌ 回答错误！正确答案是：${correctAnswer}</div>`;
+            }
+            clueArea.innerHTML = feedback;
+        }
+
+        function nextQuestion() {
+            gameState.currentQuestion++;
+            
+            if (gameState.currentQuestion >= quizQuestions.length) {
+                showSoloLevelResult();
+            } else {
+                startQuestion();
+            }
+        }
+
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            
+            if (gameState.timer) {
+                clearInterval(gameState.timer);
+            }
+            
+            gameState.timer = setInterval(() => {
+                gameState.timeLeft--;
+                timerElement.textContent = `⏰ ${gameState.timeLeft}秒`;
+                
+                if (gameState.timeLeft <= 10) {
+                    timerElement.style.background = 'linear-gradient(45deg, #ff4757 0%, #ff3838 100%)';
+                }
+                
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(gameState.timer);
+                    timeUp();
+                }
+            }, 1000);
+        }
+
+        function timeUp() {
+            gameState.currentPlayer.answers.push({
+                correct: false,
+                time: 60
+            });
+            
+            showAnswerFeedback(false, quizQuestions[gameState.currentQuestion].answer);
+            
+            setTimeout(() => {
+                nextQuestion();
+            }, 2000);
+        }
+
+        // 工具函数
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function resetGame() {
+            clearAllTimers();
+            
+            gameState = {
+                currentPlayer: null,
+                currentQuestion: 0,
+                currentLevel: 1,
+                timer: null,
+                timeLeft: 60,
+                questionStartTime: 0,
+                levelResults: []
+            };
+            
+            partyQuestions = [];
+            partyCurrentQuestion = 0;
+            partyRevealedClues = 0;
+            
+            document.getElementById('soloPlayerName').value = '';
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }, i * 100);
+            }
+        }
+
+        // 页面加载初始化
+        window.onload = function() {
+            console.log('游戏加载完成');
+        };
+
+        window.onbeforeunload = function() {
+            clearAllTimers();
+        };
+    </script>
+</body>
+</html>
